@@ -11,10 +11,9 @@ interface Props {
 export default function CartaPageClient({ restaurante }: Props) {
   const [categoriaSeleccionada, setCategoriaSeleccionada] =
     useState<Categoria | null>(null);
-
   const sliderRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll circular opcional (infinito)
+  // Manejo del scroll tipo carrusel con mouse
   useEffect(() => {
     if (!sliderRef.current) return;
     const slider = sliderRef.current;
@@ -91,7 +90,6 @@ export default function CartaPageClient({ restaurante }: Props) {
                   : "bg-gray-200 text-gray-800 hover:scale-105"
               } snap-start`}
             >
-              {/* Icono o inicial */}
               <div className="w-12 h-12 mb-2 rounded-full bg-white flex items-center justify-center">
                 {categoria.icono ? (
                   <img
@@ -109,7 +107,7 @@ export default function CartaPageClient({ restaurante }: Props) {
             </div>
           ))}
 
-          {/* “Ver todas” integrado */}
+          {/* Botón “Todas” */}
           <div
             onClick={() => setCategoriaSeleccionada(null)}
             className="flex-shrink-0 w-28 sm:w-32 rounded-xl p-3 flex flex-col items-center justify-center cursor-pointer bg-gray-300 text-gray-800 hover:scale-105 transition-transform snap-start"
@@ -122,7 +120,7 @@ export default function CartaPageClient({ restaurante }: Props) {
         </div>
       </div>
 
-      {/* SECCIÓN DE PRODUCTOS */}
+      {/* SECCIÓN DE PRODUCTOS FILTRADOS */}
       <div>
         {categoriaSeleccionada ? (
           <CategoriaSection categoria={categoriaSeleccionada} />

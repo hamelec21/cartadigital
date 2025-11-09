@@ -15,6 +15,7 @@ export interface Categoria {
   orden: number;
   activo: boolean;
   productos: Producto[];
+  icono?: string; // <- opcional
 }
 
 export interface Restaurante {
