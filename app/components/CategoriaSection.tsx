@@ -34,7 +34,7 @@ const CategoriaSection: FC<Props> = ({ categoria, colorPrimario }) => {
             key={producto.id}
             className="transition-transform hover:scale-105 duration-300"
           >
-            <ProductoCard producto={producto} />
+            <ProductoCard producto={producto} colorPrimario={colorPrimario} />
           </div>
         ))}
       </div>
