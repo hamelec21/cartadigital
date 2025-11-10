@@ -11,15 +11,18 @@ interface Props {
 export default function CartaPageClient({ restaurante }: Props) {
   const [categoriaSeleccionada, setCategoriaSeleccionada] =
     useState<Categoria | null>(null);
+
   const sliderRef = useRef<HTMLDivElement>(null);
 
-  // Manejo del scroll tipo carrusel con mouse
+  const colorPrimario = restaurante.color_primario ?? "#000";
+
+  // Scroll con mouse (arrastrar)
   useEffect(() => {
     if (!sliderRef.current) return;
     const slider = sliderRef.current;
     let isDown = false;
-    let startX: number;
-    let scrollLeft: number;
+    let startX = 0;
+    let scrollLeft = 0;
 
     const mouseDown = (e: MouseEvent) => {
       isDown = true;
@@ -29,11 +32,12 @@ export default function CartaPageClient({ restaurante }: Props) {
 
     const mouseLeave = () => (isDown = false);
     const mouseUp = () => (isDown = false);
+
     const mouseMove = (e: MouseEvent) => {
       if (!isDown) return;
       e.preventDefault();
       const x = e.pageX - slider.offsetLeft;
-      const walk = (x - startX) * 2; // velocidad scroll
+      const walk = (x - startX) * 2;
       slider.scrollLeft = scrollLeft - walk;
     };
 
@@ -58,75 +62,104 @@ export default function CartaPageClient({ restaurante }: Props) {
           <img
             src={restaurante.logo}
             alt={restaurante.nombre}
-            className="w-24 h-24 sm:w-32 sm:h-32 object-contain mb-2 sm:mb-4"
+            className="w-24 h-24 sm:w-32 sm:h-32 object-contain mb-3"
           />
         )}
+
         <h1
-          className="text-2xl sm:text-3xl font-bold text-center"
-          style={{ color: restaurante.color_primario ?? "#000" }}
+          className="text-3xl font-bold text-center"
+          style={{ color: colorPrimario }}
         >
           {restaurante.nombre}
         </h1>
+
         {restaurante.descripcion && (
-          <p className="text-gray-700 mt-1 sm:mt-2 text-center text-sm sm:text-base">
+          <p className="text-gray-700 mt-1 text-center text-sm sm:text-base">
             {restaurante.descripcion}
           </p>
         )}
       </header>
 
-      {/* CARRUSEL DE CATEGORÍAS */}
+      {/* SLIDER CATEGORÍAS */}
       <div className="relative mb-6">
         <div
           ref={sliderRef}
-          className="flex gap-4 overflow-x-auto scrollbar-hide py-2 px-2 sm:px-4 snap-x snap-mandatory"
+          className="flex gap-4 overflow-x-auto scrollbar-hide py-3 px-2 snap-x snap-mandatory"
         >
-          {restaurante.categorias.map((categoria) => (
-            <div
-              key={categoria.id}
-              onClick={() => setCategoriaSeleccionada(categoria)}
-              className={`flex-shrink-0 w-28 sm:w-32 rounded-xl p-3 flex flex-col items-center justify-center cursor-pointer transition-transform transform ${
-                categoriaSeleccionada?.id === categoria.id
-                  ? "bg-blue-500 text-white scale-105 shadow-lg"
-                  : "bg-gray-200 text-gray-800 hover:scale-105"
-              } snap-start`}
-            >
-              <div className="w-12 h-12 mb-2 rounded-full bg-white flex items-center justify-center">
-                {categoria.icono ? (
-                  <img
-                    src={categoria.icono}
-                    alt={categoria.nombre}
-                    className="w-6 h-6"
-                  />
-                ) : (
-                  <span className="font-bold">{categoria.nombre[0]}</span>
-                )}
-              </div>
-              <span className="text-sm text-center font-semibold">
-                {categoria.nombre}
-              </span>
-            </div>
-          ))}
+          {/* CATEGORÍAS */}
+          {restaurante.categorias.map((categoria) => {
+            const isActive = categoriaSeleccionada?.id === categoria.id;
 
-          {/* Botón “Todas” */}
+            return (
+              <div
+                key={categoria.id}
+                onClick={() => setCategoriaSeleccionada(categoria)}
+                style={{
+                  backgroundColor: isActive ? colorPrimario : "#e5e7eb",
+                  color: isActive ? "white" : "#1f2937",
+                }}
+                className={`flex-shrink-0 w-28 sm:w-32 rounded-xl p-4 cursor-pointer transition-transform transform ${
+                  isActive ? "scale-105 shadow-lg" : "hover:scale-105"
+                } snap-start flex flex-col items-center justify-center`}
+              >
+                <div className="w-14 h-14 mb-2 rounded-full bg-white flex items-center justify-center overflow-hidden">
+                  {categoria.icono ? (
+                    <img
+                      src={categoria.icono}
+                      alt={categoria.nombre}
+                      className="w-10 h-10 object-contain"
+                    />
+                  ) : (
+                    <span className="text-xl font-bold">
+                      {categoria.nombre[0]}
+                    </span>
+                  )}
+                </div>
+
+                <span className="text-sm font-semibold text-center">
+                  {categoria.nombre}
+                </span>
+              </div>
+            );
+          })}
+
+          {/* BOTÓN "TODAS" */}
           <div
             onClick={() => setCategoriaSeleccionada(null)}
-            className="flex-shrink-0 w-28 sm:w-32 rounded-xl p-3 flex flex-col items-center justify-center cursor-pointer bg-gray-300 text-gray-800 hover:scale-105 transition-transform snap-start"
+            className={`flex-shrink-0 w-28 sm:w-32 rounded-xl p-4 cursor-pointer snap-start flex flex-col items-center justify-center transition-transform hover:scale-105 ${
+              !categoriaSeleccionada
+                ? "scale-105 shadow-lg"
+                : "bg-gray-300 text-gray-800"
+            }`}
+            style={{
+              backgroundColor: !categoriaSeleccionada
+                ? colorPrimario
+                : "#e5e7eb",
+              color: !categoriaSeleccionada ? "white" : "#1f2937",
+            }}
           >
-            <div className="w-12 h-12 mb-2 rounded-full bg-white flex items-center justify-center">
-              <span>★</span>
+            <div className="w-14 h-14 mb-2 rounded-full bg-white flex items-center justify-center">
+              <span className="text-xl">★</span>
             </div>
-            <span className="text-sm text-center font-semibold">Todas</span>
+            <span className="text-sm font-semibold">Todas</span>
           </div>
         </div>
       </div>
 
-      {/* SECCIÓN DE PRODUCTOS FILTRADOS */}
+      {/* PRODUCTOS */}
       <div>
         {categoriaSeleccionada ? (
-          <CategoriaSection categoria={categoriaSeleccionada} />
+          <CategoriaSection
+            categoria={categoriaSeleccionada}
+            colorPrimario={colorPrimario} // 🔹 pasamos el color
+          />
         ) : (
           restaurante.categorias.map((categoria) => (
-            <CategoriaSection key={categoria.id} categoria={categoria} />
+            <CategoriaSection
+              key={categoria.id}
+              categoria={categoria}
+              colorPrimario={colorPrimario} // 🔹 pasamos el color
+            />
           ))
         )}
       </div>

@@ -6,6 +6,7 @@ export interface Producto {
   precio: number;
   imagen?: string;
   activo: boolean;
+  oferta?: boolean;
 }
 
 export interface Categoria {

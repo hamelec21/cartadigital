@@ -3,9 +3,10 @@ import { Producto } from "../types";
 
 interface Props {
   producto: Producto;
+  colorPrimario?: string; // <-- color del restaurante
 }
 
-const ProductoCard: FC<Props> = ({ producto }) => {
+const ProductoCard: FC<Props> = ({ producto, colorPrimario = "#E63946" }) => {
   return (
     <div className="bg-white shadow-md rounded-xl overflow-hidden flex flex-col transition-transform hover:scale-105 hover:shadow-xl duration-300 cursor-pointer">
       {/* Imagen con placeholder */}
@@ -29,9 +30,11 @@ const ProductoCard: FC<Props> = ({ producto }) => {
             {producto.nombre}
           </h3>
           <div className="flex items-center gap-2">
-            <p className="text-lg font-bold text-indigo-600">
+            {/* PRECIO CON COLOR PRIMARIO */}
+            <p className="text-lg font-bold" style={{ color: colorPrimario }}>
               ${producto.precio.toLocaleString("es-CL")}
             </p>
+
             {producto.oferta && (
               <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
                 Oferta
