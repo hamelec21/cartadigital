@@ -55,54 +55,125 @@ export default function CartaPageClient({ restaurante }: Props) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      {/* HEADER */}
-      <header className="flex flex-col items-center mb-6">
+    <div className="min-h-screen bg-gray-50 p-2 sm:p-6">
+      {/* HEADER estilo app */}
+      <header className="flex flex-col items-center mb-8 bg-white rounded-2xl shadow-lg py-8 px-6 sm:px-10">
+        {/* LOGO */}
         {restaurante.logo && (
-          <img
-            src={restaurante.logo}
-            alt={restaurante.nombre}
-            className="w-24 h-24 sm:w-32 sm:h-32 object-contain mb-3"
-          />
+          <div className="mb-4 w-28 h-28 sm:w-32 sm:h-32">
+            <img
+              src={restaurante.logo}
+              alt={restaurante.nombre}
+              className="w-full h-full object-contain drop-shadow-sm"
+            />
+          </div>
         )}
 
+        {/* NOMBRE */}
         <h1
-          className="text-3xl font-bold text-center"
+          className="text-3xl sm:text-4xl font-extrabold text-center tracking-tight"
           style={{ color: colorPrimario }}
         >
           {restaurante.nombre}
         </h1>
 
+        {/* DESCRIPCIÓN */}
         {restaurante.descripcion && (
-          <p className="text-gray-700 mt-1 text-center text-sm sm:text-base">
+          <p className="text-gray-700 mt-3 text-center text-sm sm:text-base max-w-md leading-relaxed">
             {restaurante.descripcion}
           </p>
         )}
+
+        {/* DATOS DE CONTACTO */}
+        {(restaurante.telefono ||
+          restaurante.direccion ||
+          restaurante.horario_atencion) && (
+          <div className="mt-6 w-full max-w-lg grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-800">
+            {/* Teléfono */}
+            {restaurante.telefono && (
+              <a
+                href={`tel:${restaurante.telefono}`}
+                className="flex items-center gap-3 bg-indigo-50 px-4 py-3 rounded-xl shadow-sm hover:bg-indigo-100 transition"
+              >
+                <img
+                  src="/iconos/llama.png"
+                  alt="Teléfono"
+                  className="w-6 h-6"
+                />
+                <span className="font-semibold">{restaurante.telefono}</span>
+              </a>
+            )}
+
+            {/* Dirección */}
+            {restaurante.direccion && (
+              <div className="flex items-center gap-3 bg-green-50 px-4 py-3 rounded-xl shadow-sm">
+                <img
+                  src="/iconos/ubicacion.png"
+                  alt="Ubicación"
+                  className="w-6 h-6"
+                />
+                <span className="font-semibold">{restaurante.direccion}</span>
+              </div>
+            )}
+
+            {/* Horario */}
+            {restaurante.horario_atencion && (
+              <div className="flex items-center gap-3 bg-yellow-50 px-4 py-3 rounded-xl shadow-sm">
+                <img
+                  src="/iconos/reloj.png"
+                  alt="Horario"
+                  className="w-6 h-6"
+                />
+                <span className="font-semibold">
+                  {restaurante.horario_atencion}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
       </header>
 
-      {/* SLIDER CATEGORÍAS */}
+      {/* SLIDER CATEGORÍAS estilo app */}
       <div className="relative mb-6">
         <div
           ref={sliderRef}
           className="flex gap-4 overflow-x-auto scrollbar-hide py-3 px-2 snap-x snap-mandatory"
         >
+          {/* BOTÓN "TODAS" — AHORA PRIMERO */}
+          <div
+            onClick={() => setCategoriaSeleccionada(null)}
+            className={`flex-shrink-0 w-28 sm:w-32 rounded-xl p-3 cursor-pointer snap-start flex flex-col items-center justify-center transition-transform hover:scale-105 ${
+              !categoriaSeleccionada ? "scale-105 shadow-lg" : ""
+            }`}
+            style={{
+              backgroundColor: !categoriaSeleccionada
+                ? colorPrimario
+                : "#e5e7eb",
+              color: !categoriaSeleccionada ? "white" : "#1f2937",
+            }}
+          >
+            <div className="w-14 h-14 mb-2 rounded-full bg-white flex items-center justify-center shadow-sm">
+              <span className="text-xl">★</span>
+            </div>
+            <span className="text-sm font-semibold">Todas</span>
+          </div>
+
           {/* CATEGORÍAS */}
           {restaurante.categorias.map((categoria) => {
             const isActive = categoriaSeleccionada?.id === categoria.id;
-
             return (
               <div
                 key={categoria.id}
                 onClick={() => setCategoriaSeleccionada(categoria)}
                 style={{
-                  backgroundColor: isActive ? colorPrimario : "#e5e7eb",
+                  backgroundColor: isActive ? colorPrimario : "#f3f4f6",
                   color: isActive ? "white" : "#1f2937",
                 }}
-                className={`flex-shrink-0 w-28 sm:w-32 rounded-xl p-4 cursor-pointer transition-transform transform ${
+                className={`flex-shrink-0 w-28 sm:w-32 rounded-xl p-3 cursor-pointer snap-start flex flex-col items-center justify-center transition-transform transform ${
                   isActive ? "scale-105 shadow-lg" : "hover:scale-105"
-                } snap-start flex flex-col items-center justify-center`}
+                }`}
               >
-                <div className="w-14 h-14 mb-2 rounded-full bg-white flex items-center justify-center overflow-hidden">
+                <div className="w-14 h-14 mb-2 rounded-full bg-white flex items-center justify-center overflow-hidden shadow-sm">
                   {categoria.icono ? (
                     <img
                       src={categoria.icono}
@@ -115,50 +186,28 @@ export default function CartaPageClient({ restaurante }: Props) {
                     </span>
                   )}
                 </div>
-
                 <span className="text-sm font-semibold text-center">
                   {categoria.nombre}
                 </span>
               </div>
             );
           })}
-
-          {/* BOTÓN "TODAS" */}
-          <div
-            onClick={() => setCategoriaSeleccionada(null)}
-            className={`flex-shrink-0 w-28 sm:w-32 rounded-xl p-4 cursor-pointer snap-start flex flex-col items-center justify-center transition-transform hover:scale-105 ${
-              !categoriaSeleccionada
-                ? "scale-105 shadow-lg"
-                : "bg-gray-300 text-gray-800"
-            }`}
-            style={{
-              backgroundColor: !categoriaSeleccionada
-                ? colorPrimario
-                : "#e5e7eb",
-              color: !categoriaSeleccionada ? "white" : "#1f2937",
-            }}
-          >
-            <div className="w-14 h-14 mb-2 rounded-full bg-white flex items-center justify-center">
-              <span className="text-xl">★</span>
-            </div>
-            <span className="text-sm font-semibold">Todas</span>
-          </div>
         </div>
       </div>
 
-      {/* PRODUCTOS */}
-      <div>
+      {/* PRODUCTOS estilo app grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-4">
         {categoriaSeleccionada ? (
           <CategoriaSection
             categoria={categoriaSeleccionada}
-            colorPrimario={colorPrimario} // 🔹 pasamos el color
+            colorPrimario={colorPrimario}
           />
         ) : (
           restaurante.categorias.map((categoria) => (
             <CategoriaSection
               key={categoria.id}
               categoria={categoria}
-              colorPrimario={colorPrimario} // 🔹 pasamos el color
+              colorPrimario={colorPrimario}
             />
           ))
         )}

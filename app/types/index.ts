@@ -31,4 +31,6 @@ export interface Restaurante {
   activo: boolean;
   fecha_pago?: string;
   categorias: Categoria[];
+  correo?: string;
+  horario_atencion?: string;
 }
