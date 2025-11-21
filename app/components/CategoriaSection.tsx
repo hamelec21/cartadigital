@@ -4,35 +4,31 @@ import ProductoCard from "./ProductoCard";
 
 interface Props {
   categoria: Categoria;
-  colorPrimario?: string; // 🔹 color recibido
+  colorPrimario?: string;
 }
 
 const CategoriaSection: FC<Props> = ({ categoria, colorPrimario }) => {
   if (!categoria.productos || categoria.productos.length === 0) return null;
 
   return (
-    <section className="mb-12">
+    <section className="scroll-mt-24" id={`categoria-${categoria.id}`}>
       {/* Título de categoría */}
-      <h2
-        className="text-2xl sm:text-3xl font-bold mb-6 pb-2 text-gray-900 flex items-center gap-2"
-        style={{
-          borderBottom: `3px solid ${colorPrimario ?? "#4f46e5"}`, // 🔹 color dinámico
-        }}
-      >
-        {/* Icono opcional */}
-        <span
-          className="inline-block w-4 h-4 rounded-full"
-          style={{ backgroundColor: colorPrimario ?? "#4f46e5" }} // 🔹 color dinámico
+      <div className="flex items-center gap-3 mb-6">
+        <div 
+          className="h-8 w-1.5 rounded-full"
+          style={{ backgroundColor: colorPrimario ?? "#4f46e5" }}
         />
-        {categoria.nombre}
-      </h2>
+        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+          {categoria.nombre}
+        </h2>
+      </div>
 
       {/* Grid de productos */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 auto-rows-fr">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {categoria.productos.map((producto) => (
           <div
             key={producto.id}
-            className="transition-transform hover:scale-105 duration-300"
+            className="h-full"
           >
             <ProductoCard producto={producto} colorPrimario={colorPrimario} />
           </div>
